@@ -24,7 +24,7 @@ def print_genre_table():
     sql = 'SELECT * FROM game_genre;'
     cursor.execute(sql)
     results = cursor.fetchall()
-    print('\033[1;36m%s\033[0m' % f'id      genre_name')
+    print('\033[1;32m%s\033[0m' % f'id      genre_name')
     for genre in results:
         print(f'{genre[0]:<10}{genre[1]:<50}')
     db.close()
@@ -38,7 +38,7 @@ def print_details_of_one_game():
     sql = 'SELECT id, game_name FROM game;'
     cursor.execute(sql)
     results = cursor.fetchall()
-    print('\033[1;36m%s\033[0m' % f'id            game_name')
+    print('\033[1;32m%s\033[0m' % f'id            game_name')
     for search in results:
         print(f'{search[0]:<10}{search[1]:<10}')
     while True:
@@ -46,7 +46,7 @@ def print_details_of_one_game():
             id = int(input('\033[1;36;40m%s\033[0m' % 'Please enter the id of the game which you want to search: '))
         except ValueError:
             print('\033[1;31;40m%s\033[0m' % 'Invalid enter.')
-            cont = input('\033[1;34;40m%s\033[0m' % 'Do you want to continue?(yes/no)') 
+            cont = input('\033[1;33;40m%s\033[0m' % 'Do you want to continue?(yes/no)') 
             if cont != 'yes':
                 break         
     sql = 'SELECT * FROM game WHERE id = ?;'
@@ -68,18 +68,18 @@ def add_other_games():
         cursor = db.cursor()
         print_genre_table()
         try:
-            game_name = input('\033[1;33;40m%s\033[0m' % 'Please enter the name of the game: ')
-            game_maker = input('\033[1;33;40m%s\033[0m' % 'Please enter the maker of the game: ')
-            game_series = int(input('\033[1;33;40m%s\033[0m' % 'Please enter the series of the game: '))
-            genre_id = input('\033[1;33;40m%s\033[0m' % 'Please enter the genre_id of the game: ')
+            game_name = input('\033[1;32;40m%s\033[0m' % 'Please enter the name of the game: ')
+            game_maker = input('\033[1;32;40m%s\033[0m' % 'Please enter the maker of the game: ')
+            game_series = int(input('\033[1;32;40m%s\033[0m' % 'Please enter the series of the game: '))
+            genre_id = input('\033[1;32;40m%s\033[0m' % 'Please enter the genre_id of the game: ')
             sql = 'INSERT INTO game (game_name, maker, series, genre_id) VALUES (?, ?, ?, ?);'
             if not game_name or not game_maker or not game_series or not genre_id:
-                    print('All fields are required.')
+                    print('\033[1;31;40m%s\033[0m' % 'All fields are required.')
                     continue
             cursor.execute(sql, (game_name, game_maker, game_series, genre_id))
             db.commit()
            
-            print('\033[1;34;40m%s\033[0m' % 'Game added successfully')
+            print('\033[1;32;40m%s\033[0m' % 'Game added successfully')
             print()
         except ValueError:
             print('\033[1;31;40m%s\033[0m' % 'Invalid enter')
@@ -100,7 +100,7 @@ def delete_one_game():
         sql = 'SELECT id, game_name FROM game;'
         cursor.execute(sql)
         results = cursor.fetchall()
-        print('\033[1;35m%s\033[0m' % f'id            game_name')
+        print('\033[1;32m%s\033[0m' % f'id            game_name')
         for search in results:
             print(f'{search[0]:<10}{search[1]:<10}')
         try:
@@ -109,7 +109,7 @@ def delete_one_game():
             cursor.execute(sql, (delete,))
             db.commit()
             print('Game deleted successfully!')
-            continu = input('\033[1;35m%s\033[0m' % 'Do you want to delete another game?(yes/no) ')
+            continu = input('\033[1;34m%s\033[0m' % 'Do you want to delete another game?(yes/no) ')
             if continu != 'yes':
                break
             else:
@@ -120,18 +120,18 @@ def delete_one_game():
             if answer != 'yes':
                 break         
     db.close()
-    input('Press enter to continue.')
+    input('\033[1;34;40m%s\033[0m' % 'Press enter to continue.')
     print()
 
 def show_games_have_same_series_or_makers(maker_series):
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     if maker_series == 'maker':
-        choice_maker = input('Please enter the maker: ')
+        choice_maker = input('\033[1;33;40m%s\033[0m' % 'Please enter the maker: ')
         sql = 'SELECT * FROM game WHERE maker = ?;'
         cursor.execute(sql, (choice_maker,))
     if maker_series == 'series':
-        choice_series = input('Please enter the series: ')
+        choice_series = input('\033[1;33;40m%s\033[0m' % 'Please enter the series: ')
         sql = 'SELECT * FROM game WHERE series = ?;'
         cursor.execute(sql, (choice_series,))
     results = cursor.fetchall()
@@ -140,9 +140,9 @@ def show_games_have_same_series_or_makers(maker_series):
         for game in results:
             print(f'{game[0]:<10}{game[1]:<45}{game[2]:<20}{game[3]:<30}')
     else:
-        print('\033[1;33m%s\033[0m' % 'No games found.')
+        print('\033[1;31m%s\033[0m' % 'No games found.')
     db.close()
-    input('\033[1;35m%s\033[0m' % 'Press enter to continue.')
+    input('\033[1;34m%s\033[0m' % 'Press enter to continue.')
     print()   
 
 '''add a new genre'''
@@ -157,9 +157,9 @@ def add_genre():
         sql = 'INSERT INTO game_genre (genre_name) VALUEs (?);'
         cursor.execute(sql, (genre_name,))
         db.commit()
-        print('\033[1;35m%s\033[0m' % 'Genre added succcessfully!')
+        print('\033[1;34m%s\033[0m' % 'Genre added succcessfully!')
         db.close()
-        input('\033[1;36m%s\033[0m' % 'Pressm enter to continue.')
+        input('\033[1;34m%s\033[0m' % 'Pressm enter to continue.')
         print()
 
 def delete_genre():
@@ -170,23 +170,23 @@ def delete_genre():
         cursor.execute(sql)
         results = cursor.fetchall()
         change_color5 = f'id            genre'
-        print('\033[1;35m%s\033[0m' % change_color5)
+        print('\033[1;32m%s\033[0m' % change_color5)
         for search in results:
             print(f'{search[0]:<10}{search[1]:<10}')
         try:
-            delete = int(input('\033[1;32m%s\033[0m' % 'Please enter the id of the genre: '))
+            delete = int(input('\033[1;33m%s\033[0m' % 'Please enter the id of the genre: '))
             sql = 'DELETE FROM game_genre where genre_id = ?;'
             cursor.execute(sql, (delete,))
             db.commit()
             print('\033[1;32m%s\033[0m' % 'Genre deleted successfully!')
-            continu = input('\033[1;32m%s\033[0m' % 'Do you want to delete another genre?(yes/no) ')
+            continu = input('\033[1;34m%s\033[0m' % 'Do you want to delete another genre?(yes/no) ')
             if continu != 'yes':
                break
             else:
                 continue
         except ValueError:
             print('\033[1;31m%s\033[0m' % 'Please enter a number')
-            answer = input('\033[1;32m%s\033[0m' % 'Do you want to continue?(yes/no)')   
+            answer = input('\033[1;34m%s\033[0m' % 'Do you want to continue?(yes/no)')   
             if answer != 'yes':
                 break         
         db.close()
@@ -240,4 +240,4 @@ Please enter the number
             break
     except ValueError:
         print('\033[1;31m%s\033[0m' % 'Please enter a number between 1 and 10')
-        conti = input('Press enter to continue.')
+        conti = input('\033[1;32;40m%s\033[0m' % 'Press enter to continue.')
