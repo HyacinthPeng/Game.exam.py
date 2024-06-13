@@ -10,9 +10,9 @@ def print_all_game_details():
     sql = 'SELECT * FROM game'
     cursor.execute(sql)
     results = cursor.fetchall()
-    print('\033[1;32m%s\033[0m' % f'id          game_name                                   maker                 series      genre_id')
+    print('\033[1;32m%s\033[0m' % f'id          game_name                                           maker            series       genre')
     for game in results:
-        print(f'{game[0]:<10}{game[1]:<50}{game[2]:<20}{game[3]:<10}{game[4]:<10}')
+        print(f'{game[0]:<10}{game[1]:<50}{game[2]:<20}{game[3]:<15}{game[4]:<10}')
     db.close()
     input('Press enter to continue.')
     print()
@@ -31,7 +31,7 @@ def print_genre_table():
     input('Press enter to continue.')
     print()
 
-'''print games details of one game'''
+'''print games details of one game 2'''
 def print_details_of_one_game():
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
@@ -41,11 +41,10 @@ def print_details_of_one_game():
     print('\033[1;36m%s\033[0m' % f'id            game_name')
     for search in results:
         print(f'{search[0]:<10}{search[1]:<10}')
-    change_color2 = 'Please enter the id of the game which you want to search: '
-    id = int(input('\033[1;36;40m%s\033[0m' % change_color2))
-    sql = 'SELECT * FROM game WHERE id =?;'
-    game = cursor.fetchone()
+    id = int(input('\033[1;36;40m%s\033[0m' % 'Please enter the id of the game which you want to search: '))
+    sql = 'SELECT * FROM game WHERE id = ?;'
     cursor.execute(sql, (id, ))
+    game = cursor.fetchone()
     if game:
         print(f'Details of the game:')
         print(f'game name: {game[1]}')
@@ -141,14 +140,18 @@ def show_games_have_same_series_or_makers(maker_series):
 def add_genre():
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
-    genre_name = input('Please enter the name of the genre: ')
-    sql = 'INSERT INTO game_genre (ganre_name) VALUEs (?);'
-    cursor.execute(sql, (genre_name,))
-    db.commit()
-    print('Genre added succcessfully!')
-    db.close()
-    input('Pressmenter to continue.')
-    print()
+    while True:
+        try:
+            genre_name = input('Please enter the name of the genre: ')
+        except ValueError:
+            print('Invalid input')
+        sql = 'INSERT INTO game_genre (genre_name) VALUEs (?);'
+        cursor.execute(sql, (genre_name,))
+        db.commit()
+        print('Genre added succcessfully!')
+        db.close()
+        input('Pressmenter to continue.')
+        print()
 
 def delete_genre():
     while True:
@@ -163,7 +166,7 @@ def delete_genre():
             print(f'{search[0]:<10}{search[1]:<10}')
         try:
             delete = int(input('Please enter the id of the genre: '))
-            sql = 'DELETE FROM genre where genre_id = ?;'
+            sql = 'DELETE FROM game_genre where genre_id = ?;'
             cursor.execute(sql, (delete,))
             db.commit()
             print('Genre deleted successfully!')
@@ -177,7 +180,7 @@ def delete_genre():
             answer = input('Do you want to continue?(yes/no)')   
             if answer != 'yes':
                 break         
-    db.close()
+        db.close()
 
 #main code
 while True:
@@ -195,8 +198,8 @@ Which function do you want to use?
 2.Print details of one game
 3.Add other games
 4.Delete games
-5.Print data by searching makers
-6.Print data by searching series
+5.Print data by makers
+6.Print data by series
 7.Print Table genre
 8.Add a genre
 9.Delete a genre
