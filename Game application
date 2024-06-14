@@ -10,9 +10,9 @@ def print_all_game_details():
     sql = 'SELECT * FROM game'
     cursor.execute(sql)
     results = cursor.fetchall()
-    print('\033[1;32m%s\033[0m' % f'id          game_name                                           maker            series       genre')
+    print('\033[1;32m%s\033[0m' % f'id          game_name                                           series               maker            genre')
     for game in results:
-        print(f'{game[0]:<10}{game[1]:<50}{game[2]:<20}{game[3]:<15}{game[4]:<10}')
+        print(f'{game[0]:<10}{game[1]:<50}{game[2]:<25}{game[3]:<20}{game[4]:<10}')
     db.close()
     input('\033[1;34;40m%s\033[0m' % 'Press enter to continue.')
     print()
@@ -45,14 +45,16 @@ def print_details_of_one_game():
         # To avoid value error stop the programme
         try:
             id = int(input('\033[1;36;40m%s\033[0m' % 'Please enter the id of the game which you want to search: '))
+            sql = 'SELECT * FROM game WHERE id = ?;'
+            cursor.execute(sql, (id, ))
+            game = cursor.fetchone()
+            break
         except ValueError:
             print('\033[1;31;40m%s\033[0m' % 'Invalid enter.')
             cont = input('\033[1;33;40m%s\033[0m' % 'Do you want to continue?(yes/no)') 
             if cont != 'yes':
                 break         
-    sql = 'SELECT * FROM game WHERE id = ?;'
-    cursor.execute(sql, (id, ))
-    game = cursor.fetchone()
+    
     if game:
         print(f'Details of the game:')
         print(f'game name: {game[1]}')
@@ -63,6 +65,8 @@ def print_details_of_one_game():
     input('\033[1;34;40m%s\033[0m' % 'Press enter to continue.')
     print()
 
+def must_contain_number(string):
+    return any(letter.isalpha() for letter in string)
 def add_other_games():
     while True:
         db = sqlite3.connect(DATABASE)
@@ -72,16 +76,16 @@ def add_other_games():
             try:
                 #To avoid value error stop the programme and make input can't be null
                 game_name = input('\033[1;33;40m%s\033[0m' % 'Please enter the name of the game: ')
-                if not game_name:
-                    print('\033[1;31;40m%s\033[0m' % 'Please enter game name')
+                if not game_name or not must_contain_number(game_name):
+                    print('\033[1;31;40m%s\033[0m' % 'Please enter a valid game name')
                     continue
                 game_maker = input('\033[1;33;40m%s\033[0m' % 'Please enter the maker of the game: ')
-                if not game_maker:
-                    print('\033[1;31;40m%s\033[0m' % 'Please enter game maker')
+                if not game_maker or not must_contain_number(game_maker):
+                    print('\033[1;31;40m%s\033[0m' % 'Please enter a valid game maker')
                     continue
                 game_series = input('\033[1;33;40m%s\033[0m' % 'Please enter the series of the game: ')
-                if not game_series:
-                    print('\033[1;31;40m%s\033[0m' % 'Please enter game series')
+                if not game_series or not must_contain_number(game_series):
+                    print('\033[1;31;40m%s\033[0m' % 'Please enter a valid game series')
                     continue
                 genre_id = input('\033[1;33;40m%s\033[0m' % 'Please enter the genre_id of the game: ')
                 try:
@@ -168,7 +172,7 @@ def add_genre():
     while True:
         try:
             genre_name = input('\033[1;33m%s\033[0m' % 'Please enter the name of the genre: ')
-            if not genre_name:
+            if not genre_name or not must_contain_number(genre_name):
                 print('Please enter a genre name')
                 continue
         except ValueError:
@@ -180,9 +184,10 @@ def add_genre():
         answer3 = input('\033[1;34m%s\033[0m' % 'Do you want to continue?(yes/no)')
         if answer3 != 'yes':
             break
-        db.close()
+        
         input('\033[1;34m%s\033[0m' % 'Press enter to continue.')
         print()
+    db.close()
 
 def delete_genre():
     while True:
@@ -211,7 +216,7 @@ def delete_genre():
             answer = input('\033[1;34m%s\033[0m' % 'Do you want to continue?(yes/no)')   
             if answer != 'yes':
                 break         
-        db.close()
+    db.close()
 
 #main code
 while True:
