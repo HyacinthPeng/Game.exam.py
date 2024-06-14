@@ -42,6 +42,7 @@ def print_details_of_one_game():
     for search in results:
         print(f'{search[0]:<10}{search[1]:<10}')
     while True:
+        # To avoid value error stop the programme
         try:
             id = int(input('\033[1;36;40m%s\033[0m' % 'Please enter the id of the game which you want to search: '))
         except ValueError:
@@ -69,16 +70,15 @@ def add_other_games():
         print_genre_table()
         while True:
             try:
+                #To avoid value error stop the programme and make input can't be null
                 game_name = input('\033[1;33;40m%s\033[0m' % 'Please enter the name of the game: ')
                 if not game_name:
                     print('\033[1;31;40m%s\033[0m' % 'Please enter game name')
                     continue
-                
                 game_maker = input('\033[1;33;40m%s\033[0m' % 'Please enter the maker of the game: ')
                 if not game_maker:
                     print('\033[1;31;40m%s\033[0m' % 'Please enter game maker')
                     continue
-                
                 game_series = input('\033[1;33;40m%s\033[0m' % 'Please enter the series of the game: ')
                 if not game_series:
                     print('\033[1;31;40m%s\033[0m' % 'Please enter game series')
@@ -92,21 +92,18 @@ def add_other_games():
                 except ValueError:
                     print('Please enter a number for id')
                     continue
-
+                #change the data of database
                 sql = 'INSERT INTO game (game_name, maker, series, genre_id) VALUES (?, ?, ?, ?);'
                 cursor.execute(sql, (game_name, game_maker, game_series, genre_id))
                 db.commit()
-                
                 print('\033[1;32;40m%s\033[0m' % 'Game added successfully')
                 print()
                 break  
             except sqlite3.Error:
                 break  
-        
         continu = input('\033[1;34;40m%s\033[0m' % 'Do you want to add another game? (yes/no): ')
         if continu.lower() != 'yes':
             break
-
     db.close()
     input('\033[1;34;40m%s\033[0m' % 'Press enter to continue.')
     print()
